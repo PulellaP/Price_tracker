@@ -2,6 +2,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 # Web Scraping
 # - Use a Python library like BeautifulSoup or Scrapy to scrape product prices from eBay, Amazon, Alibaba, etc.
@@ -16,6 +18,42 @@ searchbox_element = driver.find_element(By.ID, "twotabsearchtextbox")
 # send keys
 searchbox_element.send_keys("Phone")
 searchbox_element.send_keys(Keys.ENTER)
+
+# Use WebDriverWait to wait for the presence of search results
+# Adjust the timeout based on your network speed and website responsiveness
+wait = WebDriverWait(driver, 10)  # Set a timeout of 10 seconds
+
+# Wait for the search results to load
+wait.until(EC.visibility_of_all_elements_located((By.XPATH, "//div[@data-component-type='s-search-result']")))
+
+
+# Find all product div elements
+product_divs = driver.find_elements(By.XPATH, "//div[@data-component-type='s-search-result']")
+
+# Iterate through each product div and extract the item name
+for product_div in product_divs:
+    try:
+        # Find the h2 tag within the product div
+        h2_tag = product_div.find_element(By.TAG_NAME, "h2")
+
+        # Find the price whole within the product div
+        price_whole = product_div.find_element(By.CLASS_NAME, "a-price-whole")
+        
+        #Find the price decimal within the product div
+        price_decimal = product_div.find_element(By.CLASS_NAME, "a-price-decimal")
+
+        # Put price into text
+        price = price_whole.text 
+
+        # Extract and print the item name
+        item_name = h2_tag.text
+        print(item_name + " Price: $" + price)
+    except Exception as e:
+        # Handle exceptions (e.g., if the h2 tag is not found within the div)
+        print(f"Error: {e}")
+
+# Close the browser window
+driver.quit()
 
 # Data Entry
 # - Organize the scraped data into a structured format, such as a pandas DataFrame.
