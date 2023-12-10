@@ -43,11 +43,11 @@ for product_div in product_divs:
         price_decimal = product_div.find_element(By.CLASS_NAME, "a-price-decimal")
 
         # Put price into text
-        price = price_whole.text 
+        price = int(price_whole.text)
 
         # Extract and print the item name
         item_name = h2_tag.text
-        print(item_name + " Price: $" + price)
+        print(item_name + " Price: $" + str(price))
     except Exception as e:
         # Handle exceptions (e.g., if the h2 tag is not found within the div)
         print(f"Error: {e}")
