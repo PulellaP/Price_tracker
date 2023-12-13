@@ -30,10 +30,13 @@ wait.until(EC.visibility_of_all_elements_located((By.XPATH, "//div[@data-compone
 # Find all product div elements
 product_divs = driver.find_elements(By.XPATH, "//div[@data-component-type='s-search-result']")
 
+# create a list to add dictionary items containing the products
+productsList = []
+
 # Iterate through each product div and extract the item name
 for product_div in product_divs:
     try:
-        # Find the h2 tag within the product div
+        # Find the h2 tag within the product div and store it
         h2_tag = product_div.find_element(By.TAG_NAME, "h2")
 
         # Find the price whole within the product div
@@ -45,15 +48,19 @@ for product_div in product_divs:
         # Put price into text
         price = int(price_whole.text)
 
-        # Extract and print the item name
-        item_name = h2_tag.text
-        print(item_name + " Price: $" + str(price))
+        # Item in productsList list as a dict
+        p = {"title" : h2_tag.text, "Price" : price}
+        productsList.append(p)
+
     except Exception as e:
         # Handle exceptions (e.g., if the h2 tag is not found within the div)
         print(f"Error: {e}")
 
 # Close the browser window
 driver.quit()
+
+for product in productsList:
+    print(product["title"] + " Price: $" + str(product["Price"]))
 
 # Data Entry
 # - Organize the scraped data into a structured format, such as a pandas DataFrame.
